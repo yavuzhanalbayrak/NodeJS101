@@ -67,7 +67,7 @@ server.get('/products', (req, res) => {
                 }
                 products = result.recordset;
                 res.status(200).json(products);
-                conn.close();
+                //conn.close();
             })
         }   
     }) 
@@ -107,7 +107,7 @@ server.post('/products/new', (req, res) => {
                 }
                 products = result.recordset;
                 res.status(201).json(newProduct);
-                conn.close();
+                //conn.close();
             })
         }   
     })
@@ -137,7 +137,7 @@ server.delete('/products/:id', (req, res) => {
                         console.log("Error", err)
                     }
                     res.status(200).json({ message: 'Product deleted' });
-                    conn.close();
+                    //conn.close();
                 })
             }
             else{
@@ -174,7 +174,7 @@ server.put('/products/:id' , (req, res) => {
                         console.log("Error", err)
                     }
                     res.status(200).json({ message: 'Product updated' });
-                    conn.close();
+                    //conn.close();
                 })
             }
             else{
