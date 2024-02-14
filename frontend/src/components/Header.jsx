@@ -11,7 +11,7 @@ export const Header = () => (
         <div className="header-right">
             <Link to="/add" className="active" >Add product</Link>
             <Link to="/add" className="active" >Add category</Link>
-            <a href="#contact">Category List</a>
+            <Link to="/chat" className="active" >Chat</Link>
             <a href="#about">About</a>
         </div>
 

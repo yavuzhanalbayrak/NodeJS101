@@ -5,17 +5,26 @@ const socket = io.connect('http://localhost:5000');
 
 export const Chat = () => {
     const [message, setMessage] = useState("");
-    const [messageReceived, setMessageReceived] = useState("");
 
     const sendMessage = () => {
-      socket.emit("chat", { message });
+        socket.emit('chat', {
+            message: message,
+            sender: socket.id
+        }); 
     };
     
     useEffect(() => {
-      socket.on("chat", data => {
-        setMessageReceived(data.message);
-      });
-    });
+        const output = document.getElementById('output');
+    
+        socket.on("chat", data => {
+            output.innerHTML += '<p> <strong>'+data.sender.substring(0,3)+'...</strong> : '+data.message+'</p>';
+            
+        });
+    
+        return () => {
+            socket.off("chat");
+        };
+    }, []); 
   return (
     <div className="App">
       
@@ -27,7 +36,9 @@ export const Chat = () => {
       />
       <button onClick={sendMessage}> Send Message</button>
       <h1> Message:</h1>
-      {messageReceived}{}
+      <div id='output'></div>
+      
+      
     </div>
   )
 }
