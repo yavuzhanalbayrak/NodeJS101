@@ -16,21 +16,23 @@ export const AddEdit = () => {
 //verileri aktarıyoruz
     useEffect(()=>{
         if(id){
-            getProductId(id);
+            // getProductId(id);
         }
     },[id]);
     const createProduct = async(data)=>{
-        const res = await axios.post("http://localhost:5000/products",data);
+        const res = await axios.post("http://localhost:5000/products/new",data);
         if(res.status===200){
             window.confirm(res.data);
         }
     };
-    const getProductId = async(id)=>{
-        const res = await axios.get(`http://localhost:5000/products/:${id}`);
-        if(res.status===200){
-            setData({...res.data});    
- }
-    };
+
+    
+//     const getProductId = async(id)=>{
+//         const res = await axios.get(`http://localhost:5000/products/${id}`);
+//         if(res.status===200){
+//             setData(res.data);    
+//  }
+//     };
 
     const updateProduct = async(data,id)=>{
         const res = await axios.put(`http://localhost:5000/products/${id}`,data);
