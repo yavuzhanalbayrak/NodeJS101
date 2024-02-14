@@ -58,7 +58,7 @@ server.get('/api/categories', (req, res) => {
     res.status(200).json(categories);
 });
 
-server.get('/products', (req, res) => {
+server.get('/api/products', (req, res) => {
     conn.connect().then((result) => {
         if (result.connected) {
             result.request().query("select * from dbo.Products", (err, result) => {
@@ -95,7 +95,7 @@ server.post('/api/categories/new', (req, res) => {
     res.status(201).json(newCategory);
 });
 
-server.post('/products/new', (req, res) => {
+server.post('/api/products/new', (req, res) => {
     let newProduct = req.body;
     newProduct.id = parseInt(newProduct.id);
 
@@ -125,7 +125,7 @@ server.delete('/api/categories/:id', (req, res) => {
     }
 });
 
-server.delete('/products/:id', (req, res) => {
+server.delete('/api/products/:id', (req, res) => {
     const productId = parseInt(req.params.id);
     const product = products.find(p => p.id === productId);
 
@@ -161,7 +161,7 @@ server.put('/api/categories/:id' , (req, res) => {
     }
 });
 
-server.put('/products/:id' , (req, res) => {
+server.put('/api/products/:id' , (req, res) => {
     const productId = parseInt(req.params.id);
     const product = products.find(p => p.id === productId);
     const updatedProduct = req.body;

@@ -20,7 +20,7 @@ export const AddEdit = () => {
         }
     },[id]);
     const createProduct = async(data)=>{
-        const res = await axios.post("http://localhost:5000/products/new",data);
+        const res = await axios.post("http://localhost:5000/api/products/new",data);
         if(res.status===200){
             window.confirm(res.data);
         }
@@ -35,7 +35,7 @@ export const AddEdit = () => {
 //     };
 
     const updateProduct = async(data,id)=>{
-        const res = await axios.put(`http://localhost:5000/products/${id}`,data);
+        const res = await axios.put(`http://localhost:5000/api/products/${id}`,data);
         if(res.status===200){
             window.confirm(res.data);
         }

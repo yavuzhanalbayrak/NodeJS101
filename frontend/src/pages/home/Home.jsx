@@ -8,7 +8,7 @@ export const Home = () => {
         getProducts();
     }, []);
     const getProducts = async () => {
-        const res = await axios.get("http://localhost:5000/products");
+        const res = await axios.get("http://localhost:5000/api/products");
         if (res.status === 200) {
             setData(res.data);
         }
@@ -17,7 +17,7 @@ export const Home = () => {
 
     const onDeleteProduct = async (id)=>{
         if(window.confirm("Emin misin")){
-            const res = await axios.delete(`http://localhost:5000/products/${id}`);
+            const res = await axios.delete(`http://localhost:5000/api/products/${id}`);
             if(res.status===200){
                 getProducts();
             }
