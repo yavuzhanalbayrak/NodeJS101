@@ -1,23 +1,23 @@
-const express = require('express');
-const server = express();
-const http = require('http');
-const httpServer = http.createServer(server); // HTTP sunucusu oluştur
-
 const bodyParser = require('body-parser');
+const socketio = require('socket.io');
+const express = require('express');
+const http = require('http');
+const cors = require('cors');
+
+const server = express();
+const httpServer = http.createServer(server);
+
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json());
 
-const cors = require('cors');
 server.use(cors());
 
-// Express sunucusunu başlat
 const port = 5000;
 const appServer = httpServer.listen(port, () => {
     console.log(`Express server is running on port ${port}`);
 });
 
 // Socket.IO sunucusunu başlat
-const socketio = require('socket.io');
 const io = socketio(httpServer, {
     cors: {
         origin: "http://localhost:3000",
@@ -33,7 +33,6 @@ io.on('connection', (socket) => {
         io.sockets.emit('chat', data);
     });
 });
-
 
 //Entities
 var categories;
