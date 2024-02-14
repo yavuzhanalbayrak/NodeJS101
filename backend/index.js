@@ -1,7 +1,7 @@
 const express = require('express');
 const server = express();
 const http = require('http');
-const httpServer = http.createServer(server);
+const httpServer = http.createServer(server); // HTTP sunucusu oluştur
 
 const bodyParser = require('body-parser');
 server.use(bodyParser.urlencoded({ extended: true }));
@@ -10,31 +10,30 @@ server.use(bodyParser.json());
 const cors = require('cors');
 server.use(cors());
 
-//express server starts 
+// Express sunucusunu başlat
 const port = 5000;
-const appServer = server.listen(port, () => {
-    console.log('Server is running on port 5000');
+const appServer = httpServer.listen(port, () => {
+    console.log(`Express server is running on port ${port}`);
 });
 
-//Websocket server starts
-const socket = require('socket.io'); 
-const {Server} = require('socket.io');
-
-const io = new Server (httpServer, {
+// Socket.IO sunucusunu başlat
+const socketio = require('socket.io');
+const io = socketio(httpServer, {
     cors: {
-        origin: "http://localhost:5000",
+        origin: "http://localhost:3000",
         methods: ['GET', 'POST']
     },
 });
 
-//Socket.io events
-io.on('connection', (socket) =>{
+// Socket.IO olaylarını tanımla
+io.on('connection', (socket) => {
     console.log(socket.id);
     
-    socket.on('chat', data =>{
+    socket.on('chat', data => {
         io.sockets.emit('chat', data);
-    })
-})
+    });
+});
+
 
 //Entities
 var categories;
