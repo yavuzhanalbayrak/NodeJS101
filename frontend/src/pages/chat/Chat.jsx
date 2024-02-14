@@ -15,10 +15,11 @@ export const Chat = () => {
     
     useEffect(() => {
         const output = document.getElementById('output');
+        const messageText = document.getElementById('messageText');
     
         socket.on("chat", data => {
             output.innerHTML += '<p> <strong>'+data.sender.substring(0,3)+'...</strong> : '+data.message+'</p>';
-            
+            messageText.value = ''
         });
     
         return () => {
@@ -29,6 +30,7 @@ export const Chat = () => {
     <div className="App">
       
       <input
+        id='messageText'
         placeholder="Message..."
         onChange={(event) => {
           setMessage(event.target.value);
