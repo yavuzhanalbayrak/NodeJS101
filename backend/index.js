@@ -1,5 +1,7 @@
 const express = require('express');
 const server = express();
+const http = require('http');
+const httpServer = http.createServer(server);
 
 const bodyParser = require('body-parser');
 server.use(bodyParser.urlencoded({ extended: true }));
@@ -16,7 +18,14 @@ const appServer = server.listen(port, () => {
 
 //Websocket server starts
 const socket = require('socket.io'); 
-const io = socket(appServer);
+const {Server} = require('socket.io');
+
+const io = new Server (httpServer, {
+    cors: {
+        origin: "http://localhost:5000",
+        methods: ['GET', 'POST']
+    },
+});
 
 //Socket.io events
 io.on('connection', (socket) =>{
