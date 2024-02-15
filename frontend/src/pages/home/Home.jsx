@@ -36,15 +36,15 @@ export const Home = () => {
                 </thead>
                 <tbody>
                     {data && data.map((product, index) => (
-                        <tr key={product.id}>
+                        <tr key={product.Id}>
                             <td>{index + 1}</td>
-                            <td>{product.name}</td>
-                            <td>{product.category}</td>
-                            <td>{product.price}</td>
+                            <td>{product.Name}</td>
+                            <td>{product.Category}</td>
+                            <td>{product.Price}</td>
                             <td>
                                 <div className="buttons">
                                     <button className="btn">View</button>
-                                    <Link to={`/update/${product.id}`}>
+                                    <Link to={`/update/${product.Id}`}>
                                     <button className="btn2">Edit</button>
                                     </Link>
                                     <button className="btn3" onClick={() =>onDeleteProduct(product.id)}>Delete</button>
