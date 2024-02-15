@@ -47,7 +47,7 @@ export const Home = () => {
                                     <Link to={`/update/${product.Id}`}>
                                     <button className="btn2">Edit</button>
                                     </Link>
-                                    <button className="btn3" onClick={() =>onDeleteProduct(product.id)}>Delete</button>
+                                    <button className="btn3" onClick={() =>onDeleteProduct(product.Id)}>Delete</button>
 
                                 </div>
                             </td>
