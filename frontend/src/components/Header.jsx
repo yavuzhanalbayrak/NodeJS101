@@ -12,7 +12,6 @@ export const Header = () => (
             <Link to="/addProduct" className="active" >Add product</Link>
             <Link to="/addCategory" className="active" >Add category</Link>
             <Link to="/chat" className="active" >Chat</Link>
-            <a href="#about">About</a>
         </div>
 
     </div>

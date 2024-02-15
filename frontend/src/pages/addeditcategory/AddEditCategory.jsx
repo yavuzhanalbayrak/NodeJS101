@@ -63,7 +63,7 @@ export const AddEditCategory = () => {
                 <label htmlFor="name">name</label>
                 <input type="text" id="name" name="name" placeholder="Adinizi giriniz" onChange={handleInputChange} value={name}></input>
             </div>
-
+<br></br>
             <input type="submit" className="btn btn-success" value="Add"></input>
         </form>
     </div>

@@ -1,6 +1,8 @@
 import React from 'react'
 import io from "socket.io-client";
 import { useEffect, useState } from "react";
+import "./chat.css";
+
 const socket = io.connect('http://localhost:5000');
 
 export const Chat = () => {
@@ -28,15 +30,17 @@ export const Chat = () => {
     }, []); 
   return (
     <div className="App">
-      
-      <input
+      <br></br>
+      <input className='field'
         id='messageText'
         placeholder="Message..."
         onChange={(event) => {
           setMessage(event.target.value);
         }}
       />
-      <button onClick={sendMessage}> Send Message</button>
+      <br></br>
+
+      <button className="button" onClick={sendMessage}> Send Message</button>
       <h1> Message:</h1>
       <div id='output'></div>
       

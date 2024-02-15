@@ -78,6 +78,7 @@ export const AddEdit = () => {
                 <label htmlFor="price">Fiyat</label>
                 <input type="text" id="price" name="price" placeholder="Adinizi giriniz" onChange={handleInputChange} value={price}></input>
             </div>
+            <br></br>
             <input type="submit" className="btn btn-success" value="Add"></input>
         </form>
     </div>
