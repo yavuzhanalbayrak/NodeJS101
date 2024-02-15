@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-import "./home.css";
+import "./product.css";
 import { Link } from "react-router-dom";
-export const Home = () => {
+
+export const Product = () => {
     const [data, setData] = useState([]);
     useEffect(() => {
         getProducts();
@@ -28,7 +29,7 @@ export const Home = () => {
             <table>
                 <thead>
                     <tr>
-                        <th></th>
+                        <th>no</th>
                         <th>name</th>
                         <th>category</th>
                         <th>Price</th>
