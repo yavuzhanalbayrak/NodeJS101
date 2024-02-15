@@ -38,18 +38,25 @@ io.on('connection', (socket) => {
 var categories;
 var products;
 
-//mssql database connection
-const sql = require("mssql/msnodesqlv8")
+const mysql = require('mysql');
 
-const conn = new sql.ConnectionPool({
-    database: "deneme",
-    server: "(localdb)\\MSSQLLocalDB",
-    driver: "msnodesqlv8",
-    options: {
-        trustServerCertificate: true,
-        trustedConnection: true
-    }
-})
+const conn = mysql.createConnection({
+  host: 'localhost',
+  user: 'root', // MySQL kullanıcı adınızı buraya girin
+  password: '1234', // MySQL şifrenizi buraya girin
+  database: 'nodejs', // Bağlanmak istediğiniz veritabanının adını buraya girin
+  port: '3306'
+});
+
+conn.connect((err) => {
+  if (err) {
+    console.error('MySQL connection failed: ', err);
+    return;
+  }
+  console.log('Connected to MySQL database');
+});
+
+module.exports = conn;
 
 //Http methods
 server.get('/api/categories', (req, res) => {
@@ -58,18 +65,14 @@ server.get('/api/categories', (req, res) => {
 });
 
 server.get('/api/products', (req, res) => {
-    conn.connect().then((result) => {
-        if (result.connected) {
-            result.request().query("select * from dbo.Products", (err, result) => {
-                if (err) {
-                    console.log("Error", err)
-                }
-                products = result.recordset;
-                res.status(200).json(products);
-                //conn.close();
-            })
-        }   
-    }) 
+    conn.query('SELECT * FROM products', function (error, results, fields) {
+        if (error) {
+          console.error('Sorgu hatası: ' + error);
+          return;
+        }
+        res.status(200).json(results);
+        // Sonuçları istemciye gönderme veya başka bir işlem yapma
+      });
 });
 
 // server.get('/products/:id', (req, res) => {
@@ -98,17 +101,13 @@ server.post('/api/products/new', (req, res) => {
     let newProduct = req.body;
     newProduct.id = parseInt(newProduct.id);
 
-    conn.connect().then((result) => {
-        if (result.connected) {
-            result.request().query("INSERT INTO deneme.dbo.Products (name,category,price) VALUES ('"+newProduct.name+"','"+newProduct.category+"','"+newProduct.price+"')", (err, result) => {
-                if (err) {
-                    console.log("Error", err)
-                }
-                products = result.recordset;
-                res.status(201).json(newProduct);
-                //conn.close();
-            })
-        }   
+    conn.query("INSERT INTO nodejs.products (name,category,price) VALUES ('"+newProduct.name+"','"+newProduct.category+"','"+newProduct.price+"')", (err, result) => {
+        if (err) {
+            console.log("Error", err)
+        }
+        products = result.recordset;
+        res.status(201).json(newProduct);
+        
     })
 });
 
@@ -126,24 +125,13 @@ server.delete('/api/categories/:id', (req, res) => {
 
 server.delete('/api/products/:id', (req, res) => {
     const productId = parseInt(req.params.id);
-    const product = products.find(p => p.id === productId);
 
-    conn.connect().then((result) => {
-        if (result.connected) {
-            if(product){
-                result.request().query("DELETE FROM deneme.dbo.Products WHERE id="+product.id, (err, result) => {
-                    if (err) {
-                        console.log("Error", err)
-                    }
-                    res.status(200).json({ message: 'Product deleted' });
-                    //conn.close();
-                })
-            }
-            else{
-                res.status(404).json({ message: 'Product not found' });
-            }
-            
-        }   
+    conn.query("DELETE FROM nodejs.products WHERE id="+productId, (err, result) => {
+        if (err) {
+            console.log("Error", err)
+        }
+        res.status(200).json({ message: 'Product deleted' });
+        
     })
 });
 
@@ -162,24 +150,13 @@ server.put('/api/categories/:id' , (req, res) => {
 
 server.put('/api/products/:id' , (req, res) => {
     const productId = parseInt(req.params.id);
-    const product = products.find(p => p.id === productId);
     const updatedProduct = req.body;
 
-    conn.connect().then((result) => {
-        if (result.connected) {
-            if(product){
-                result.request().query("UPDATE deneme.dbo.Products SET name = '"+updatedProduct.name+"',category = '"+updatedProduct.category+"', price = '"+updatedProduct.price+"' WHERE id="+productId, (err, result) => {
-                    if (err) {
-                        console.log("Error", err)
-                    }
-                    res.status(200).json({ message: 'Product updated' });
-                    //conn.close();
-                })
-            }
-            else{
-                res.status(404).json({ message: 'Product not found' });
-            }
-        }   
+    conn.query("UPDATE nodejs.products SET name = '"+updatedProduct.name+"',category = '"+updatedProduct.category+"', price = '"+updatedProduct.price+"' WHERE id="+productId, (err, result) => {
+        if (err) {
+            console.log("Error", err)
+        }
+        res.status(200).json({ message: 'Product updated' });
     })
 });
 
