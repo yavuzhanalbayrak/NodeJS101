@@ -81,21 +81,27 @@ server.get('/api/products', (req, res) => {
       });
 });
 
-// server.get('/products/:id', (req, res) => {
-//     const itemId = parseInt(req.params.id);
-//     conn.connect().then((result) => {
-//         if (result.connected) {
-//             result.request().query("select * from dbo.Products where id ="+itemId, (err, result) => {
-//                 if (err) {
-//                     console.log("Error", err)
-//                 }
-//                 products = result.recordset;
-//                 res.status(200).json(products);
-//                 conn.close();
-//             })
-//         }   
-//     }) 
-// });
+server.get('/api/products/:id', (req, res) => {
+    const productId = parseInt(req.params.id);
+    conn.query('SELECT * FROM nodejs.products WHERE Id = '+productId , function (error, results, fields) {
+        if (error) {
+          console.error('Sorgu hatası: ' + error);
+          return;
+        }
+        res.status(200).json(results);
+      });
+});
+
+server.get('/api/categories/:id', (req, res) => {
+    const categoryId = parseInt(req.params.id);
+    conn.query('SELECT * FROM nodejs.categories WHERE Id = '+categoryId , function (error, results, fields) {
+        if (error) {
+          console.error('Sorgu hatası: ' + error);
+          return;
+        }
+        res.status(200).json(results);
+      });
+});
 
 server.post('/api/categories/new', (req, res) => {
     let newCategory = req.body;
