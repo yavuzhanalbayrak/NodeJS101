@@ -60,8 +60,14 @@ module.exports = conn;
 
 //Http methods
 server.get('/api/categories', (req, res) => {
-    
-    res.status(200).json(categories);
+    conn.query('SELECT * FROM categories', function (error, results, fields) {
+        if (error) {
+          console.error('Sorgu hatası: ' + error);
+          return;
+        }
+        res.status(200).json(results);
+        // Sonuçları istemciye gönderme veya başka bir işlem yapma
+      });
 });
 
 server.get('/api/products', (req, res) => {
@@ -93,8 +99,16 @@ server.get('/api/products', (req, res) => {
 
 server.post('/api/categories/new', (req, res) => {
     let newCategory = req.body;
-    categories.push(newCategory);
-    res.status(201).json(newCategory);
+    newCategory.id = parseInt(newCategory.id);
+
+    conn.query("INSERT INTO nodejs.categories (name) VALUES ('"+newCategory.name+"')", (err, result) => {
+        if (err) {
+            console.log("Error", err)
+        }
+        categories = result.recordset;
+        res.status(201).json(newCategory);
+        
+    })
 });
 
 server.post('/api/products/new', (req, res) => {
@@ -112,15 +126,15 @@ server.post('/api/products/new', (req, res) => {
 });
 
 server.delete('/api/categories/:id', (req, res) => {
-    const itemId = parseInt(req.params.id);
-    const index = categories.findIndex(c => c.id === itemId);
+    const categoryId = parseInt(req.params.id);
 
-    if (index !== -1) {
-        categories.splice(index, 1);
+    conn.query("DELETE FROM nodejs.categories WHERE id="+categoryId, (err, result) => {
+        if (err) {
+            console.log("Error", err)
+        }
         res.status(200).json({ message: 'Category deleted' });
-    } else {
-        res.status(404).json({ message: 'Category not found' });
-    }
+        
+    })
 });
 
 server.delete('/api/products/:id', (req, res) => {
@@ -136,16 +150,15 @@ server.delete('/api/products/:id', (req, res) => {
 });
 
 server.put('/api/categories/:id' , (req, res) => {
-    const itemId = parseInt(req.params.id);
-    const index = categories.findIndex(c => c.id === itemId);
+    const categoryId = parseInt(req.params.id);
     const updatedCategory = req.body;
 
-    if (index !== -1) {
-        categories[index].name = updatedCategory.name;
-        res.status(200).json({ message: 'Category updated', updatedCategory });
-    } else {
-        res.status(404).json({ message: 'Category not found' });
-    }
+    conn.query("UPDATE nodejs.categories SET name = '"+updatedCategory.name+"' WHERE id="+categoryId, (err, result) => {
+        if (err) {
+            console.log("Error", err)
+        }
+        res.status(200).json({ message: 'Category updated' });
+    })
 });
 
 server.put('/api/products/:id' , (req, res) => {
