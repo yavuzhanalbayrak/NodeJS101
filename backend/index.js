@@ -26,7 +26,6 @@ app.get('/api/categories', (req, res) => {
           return;
         }
         res.status(200).json(results);
-        // Sonuçları istemciye gönderme veya başka bir işlem yapma
       });
 });
 
@@ -37,7 +36,6 @@ app.get('/api/products', (req, res) => {
           return;
         }
         res.status(200).json(results);
-        // Sonuçları istemciye gönderme veya başka bir işlem yapma
       });
 });
 
