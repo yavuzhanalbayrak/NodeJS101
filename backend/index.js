@@ -4,6 +4,7 @@ const http = require('http');
 const cors = require('cors');
 const socketHandler = require('./socketHandler');
 const connect = require('./data');
+const requestMiddleware = require('./middlewares/requestMiddleware');
 
 const app = express();
 const httpServer = http.createServer(app);
@@ -13,10 +14,10 @@ app.use(bodyParser.json());
 
 app.use(cors());
 
-
 socketHandler(httpServer);
 const conn = connect();
 
+requestMiddleware(app);
 
 //Http methods
 app.get('/api/categories', (req, res) => {

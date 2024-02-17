@@ -11,8 +11,7 @@ function initializeSocket(httpServer) {
     });
 
     io.on('connection', (socket) => {
-        console.log(socket.id);
-        
+        //console.log(socket.id);
         socket.on('chat', data => {
             io.sockets.emit('chat', data);
         });
