@@ -1,65 +1,25 @@
 const bodyParser = require('body-parser');
-const socketio = require('socket.io');
 const express = require('express');
 const http = require('http');
 const cors = require('cors');
+const socketHandler = require('./socketHandler');
+const connect = require('./data');
 
-const server = express();
-const httpServer = http.createServer(server);
+const app = express();
+const httpServer = http.createServer(app);
 
-server.use(bodyParser.urlencoded({ extended: true }));
-server.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
-server.use(cors());
+app.use(cors());
 
-const port = 5000;
-const appServer = httpServer.listen(port, () => {
-    console.log(`Express server is running on port ${port}`);
-});
 
-// Socket.IO sunucusunu başlat
-const io = socketio(httpServer, {
-    cors: {
-        origin: "http://localhost:3000",
-        methods: ['GET', 'POST']
-    },
-});
+socketHandler(httpServer);
+const conn = connect();
 
-// Socket.IO olaylarını tanımla
-io.on('connection', (socket) => {
-    console.log(socket.id);
-    
-    socket.on('chat', data => {
-        io.sockets.emit('chat', data);
-    });
-});
-
-//Entities
-var categories;
-var products;
-
-const mysql = require('mysql');
-
-const conn = mysql.createConnection({
-  host: 'localhost',
-  user: 'root', // MySQL kullanıcı adınızı buraya girin
-  password: '1234', // MySQL şifrenizi buraya girin
-  database: 'nodejs', // Bağlanmak istediğiniz veritabanının adını buraya girin
-  port: '3306'
-});
-
-conn.connect((err) => {
-  if (err) {
-    console.error('MySQL connection failed: ', err);
-    return;
-  }
-  console.log('Connected to MySQL database');
-});
-
-module.exports = conn;
 
 //Http methods
-server.get('/api/categories', (req, res) => {
+app.get('/api/categories', (req, res) => {
     conn.query('SELECT * FROM categories', function (error, results, fields) {
         if (error) {
           console.error('Sorgu hatası: ' + error);
@@ -70,7 +30,7 @@ server.get('/api/categories', (req, res) => {
       });
 });
 
-server.get('/api/products', (req, res) => {
+app.get('/api/products', (req, res) => {
     conn.query('SELECT * FROM products', function (error, results, fields) {
         if (error) {
           console.error('Sorgu hatası: ' + error);
@@ -81,7 +41,7 @@ server.get('/api/products', (req, res) => {
       });
 });
 
-server.get('/api/products/:id', (req, res) => {
+app.get('/api/products/:id', (req, res) => {
     const productId = parseInt(req.params.id);
     conn.query('SELECT * FROM nodejs.products WHERE Id = '+productId , function (error, results, fields) {
         if (error) {
@@ -92,7 +52,7 @@ server.get('/api/products/:id', (req, res) => {
       });
 });
 
-server.get('/api/categories/:id', (req, res) => {
+app.get('/api/categories/:id', (req, res) => {
     const categoryId = parseInt(req.params.id);
     conn.query('SELECT * FROM nodejs.categories WHERE Id = '+categoryId , function (error, results, fields) {
         if (error) {
@@ -103,7 +63,7 @@ server.get('/api/categories/:id', (req, res) => {
       });
 });
 
-server.post('/api/categories/new', (req, res) => {
+app.post('/api/categories/new', (req, res) => {
     let newCategory = req.body;
     newCategory.id = parseInt(newCategory.id);
 
@@ -111,13 +71,12 @@ server.post('/api/categories/new', (req, res) => {
         if (err) {
             console.log("Error", err)
         }
-        categories = result.recordset;
         res.status(201).json(newCategory);
         
     })
 });
 
-server.post('/api/products/new', (req, res) => {
+app.post('/api/products/new', (req, res) => {
     let newProduct = req.body;
     newProduct.id = parseInt(newProduct.id);
 
@@ -125,13 +84,12 @@ server.post('/api/products/new', (req, res) => {
         if (err) {
             console.log("Error", err)
         }
-        products = result.recordset;
         res.status(201).json(newProduct);
         
     })
 });
 
-server.delete('/api/categories/:id', (req, res) => {
+app.delete('/api/categories/:id', (req, res) => {
     const categoryId = parseInt(req.params.id);
 
     conn.query("DELETE FROM nodejs.categories WHERE id="+categoryId, (err, result) => {
@@ -143,7 +101,7 @@ server.delete('/api/categories/:id', (req, res) => {
     })
 });
 
-server.delete('/api/products/:id', (req, res) => {
+app.delete('/api/products/:id', (req, res) => {
     const productId = parseInt(req.params.id);
 
     conn.query("DELETE FROM nodejs.products WHERE id="+productId, (err, result) => {
@@ -155,7 +113,7 @@ server.delete('/api/products/:id', (req, res) => {
     })
 });
 
-server.put('/api/categories/:id' , (req, res) => {
+app.put('/api/categories/:id' , (req, res) => {
     const categoryId = parseInt(req.params.id);
     const updatedCategory = req.body;
 
@@ -167,7 +125,7 @@ server.put('/api/categories/:id' , (req, res) => {
     })
 });
 
-server.put('/api/products/:id' , (req, res) => {
+app.put('/api/products/:id' , (req, res) => {
     const productId = parseInt(req.params.id);
     const updatedProduct = req.body;
 
@@ -177,5 +135,10 @@ server.put('/api/products/:id' , (req, res) => {
         }
         res.status(200).json({ message: 'Product updated' });
     })
+});
+
+const port = 5000;
+const server = httpServer.listen(port, () => {
+    console.log(`Express server is running on port ${port}`);
 });
 
