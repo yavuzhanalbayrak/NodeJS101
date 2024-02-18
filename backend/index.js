@@ -90,37 +90,70 @@ app.post('/api/products/new', (req, res) => {
 
 app.delete('/api/categories/:id', (req, res) => {
     const categoryId = parseInt(req.params.id);
-
-    conn.query("DELETE FROM nodejs.categories WHERE id="+categoryId, (err, result) => {
+    conn.query("SELECT * FROM nodejs.categories WHERE id = '"+categoryId+"'", (err, result) => {
         if (err) {
-            console.log("Error", err)
+            console.error("Error while retrieving category:", err);
+            res.status(500).json({ message: 'Internal Server Error' });
+            return;
         }
-        res.status(200).json({ message: 'Category deleted' });
-        
+        if (result.length === 0) {
+            res.status(404).json({ message: 'Category not found' });
+            return;
+        }
+
+        conn.query("DELETE FROM nodejs.categories WHERE id="+categoryId, (err, result) => {
+            if (err) {
+                console.log("Error", err)
+            }
+            res.status(200).json({ message: 'Category deleted' });
+        })
     })
 });
 
 app.delete('/api/products/:id', (req, res) => {
     const productId = parseInt(req.params.id);
 
-    conn.query("DELETE FROM nodejs.products WHERE id="+productId, (err, result) => {
+    conn.query("SELECT * FROM nodejs.products WHERE id = '"+productId+"'", (err, result) => {
         if (err) {
-            console.log("Error", err)
+            console.error("Error while retrieving product:", err);
+            res.status(500).json({ message: 'Internal Server Error' });
+            return;
         }
-        res.status(200).json({ message: 'Product deleted' });
-        
-    })
+        if (result.length === 0) {
+            res.status(404).json({ message: 'Products not found' });
+            return;
+        }
+
+        conn.query("DELETE FROM nodejs.products WHERE id="+productId, (err, result) => {
+            if (err) {
+                console.log("Error", err)
+            }
+            res.status(200).json({ message: 'Product deleted' });
+        })
+    })    
 });
 
 app.put('/api/categories/:id' , (req, res) => {
     const categoryId = parseInt(req.params.id);
     const updatedCategory = req.body;
 
-    conn.query("UPDATE nodejs.categories SET name = '"+updatedCategory.name+"' WHERE id="+categoryId, (err, result) => {
+    conn.query("SELECT * FROM nodejs.categories WHERE id = '"+categoryId+"'", (err, result) => {
         if (err) {
-            console.log("Error", err)
+            console.error("Error while retrieving category:", err);
+            res.status(500).json({ message: 'Internal Server Error' });
+            return;
         }
-        res.status(200).json({ message: 'Category updated' });
+        if (result.length === 0) {
+            res.status(404).json({ message: 'Category not found' });
+            return;
+        }
+
+        conn.query("UPDATE nodejs.categories SET name = '"+updatedCategory.name+"' WHERE id="+categoryId, (err, result) => {
+            if (err) {
+                console.log("Error", err)
+            }
+            res.status(200).json({ message: 'Category updated' });
+        })
     })
 });
 
@@ -128,11 +161,23 @@ app.put('/api/products/:id' , (req, res) => {
     const productId = parseInt(req.params.id);
     const updatedProduct = req.body;
 
-    conn.query("UPDATE nodejs.products SET name = '"+updatedProduct.name+"',category = '"+updatedProduct.category+"', price = '"+updatedProduct.price+"' WHERE id="+productId, (err, result) => {
+    conn.query("SELECT * FROM nodejs.products WHERE id = '"+productId+"'", (err, result) => {
         if (err) {
-            console.log("Error", err)
+            console.error("Error while retrieving product:", err);
+            res.status(500).json({ message: 'Internal Server Error' });
+            return;
         }
-        res.status(200).json({ message: 'Product updated' });
+        if (result.length === 0) {
+            res.status(404).json({ message: 'Products not found' });
+            return;
+        }
+
+        conn.query("UPDATE nodejs.products SET name = '"+updatedProduct.name+"',category = '"+updatedProduct.category+"', price = '"+updatedProduct.price+"' WHERE id="+productId, (err, result) => {
+            if (err) {
+                console.log("Error", err)
+            }
+            res.status(200).json({ message: 'Product updated' });
+        })
     })
 });
 
