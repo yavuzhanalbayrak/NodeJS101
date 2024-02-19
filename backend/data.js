@@ -20,6 +20,4 @@ function connect() {
       return conn;
 }
 
-
-
 module.exports = connect;

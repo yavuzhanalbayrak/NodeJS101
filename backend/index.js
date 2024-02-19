@@ -27,7 +27,7 @@ app.get('/api/categories', (req, res) => {
           return;
         }
         res.status(200).json(results);
-      });
+    });
 });
 
 app.get('/api/products', (req, res) => {
@@ -37,7 +37,7 @@ app.get('/api/products', (req, res) => {
           return;
         }
         res.status(200).json(results);
-      });
+    });
 });
 
 app.get('/api/products/:id', (req, res) => {
@@ -48,7 +48,7 @@ app.get('/api/products/:id', (req, res) => {
           return;
         }
         res.status(200).json(results);
-      });
+    });
 });
 
 app.get('/api/categories/:id', (req, res) => {
@@ -59,7 +59,7 @@ app.get('/api/categories/:id', (req, res) => {
           return;
         }
         res.status(200).json(results);
-      });
+    });
 });
 
 app.post('/api/categories/new', (req, res) => {
@@ -70,8 +70,7 @@ app.post('/api/categories/new', (req, res) => {
         if (err) {
             console.log("Error", err)
         }
-        res.status(201).json(newCategory);
-        
+        res.status(201).json(newCategory);    
     })
 });
 
@@ -84,7 +83,6 @@ app.post('/api/products/new', (req, res) => {
             console.log("Error", err)
         }
         res.status(201).json(newProduct);
-        
     })
 });
 
