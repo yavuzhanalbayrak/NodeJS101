@@ -17,7 +17,7 @@ app.use(cors());
 socketHandler(httpServer);
 const conn = connect();
 
-loggerMiddleware(app);
+app.use(loggerMiddleware);
 
 //Http methods
 app.get('/api/categories', (req, res) => {
